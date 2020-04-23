@@ -1,12 +1,6 @@
 import pandas as pd
 
 
-class Heuristics:
-
-    @staticmethod
-    def first_best(current, s):
-        pass
-
 class Graph:
 
     def __init__(self, file_graph_definition):
@@ -82,8 +76,6 @@ class Graph:
             if terminal_paths and min(terminal_paths.values()) <= min(paths.values()):
                 return min(terminal_paths, key=terminal_paths.get), min(terminal_paths.values())
 
-
-
     def get_outgoing_edges(self, vertex):
         edges = dict()
         for connected_vertex in self.vertices_connection[vertex]:
@@ -110,3 +102,5 @@ class Graph:
             pass
         elif heuristic_function == "first_best":
             return self.get_edge_weight(path[-1], path[-3])
+        elif heuristic_function == "brute-force":
+            return self.edges_dict
