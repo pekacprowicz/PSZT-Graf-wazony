@@ -1,7 +1,5 @@
 import pandas as pd
 
-# todo no path leading to end vertex
-# todo vertice names not only letters
 # todo no need to keep all terminal paths in get_shortest_path, only the shortest one is needed
 
 
@@ -16,12 +14,11 @@ class Graph:
         input_data = pd.read_csv(definition, sep=',')
         for edge_ in input_data.iterrows():
             edge = edge_[1]
-            self.add_update_vertex(edge[0], edge[1])
-            self.add_update_vertex(edge[1], edge[0])
+            self.add_or_update_vertex_neighbours(edge[0], edge[1])
+            self.add_or_update_vertex_neighbours(edge[1], edge[0])
             self.edges_dict[f"{edge[0]}-{edge[1]}"] = edge[2]
 
-    #
-    def add_update_vertex(self, vertex_id, connected_vertex):
+    def add_or_update_vertex_neighbours(self, vertex_id, connected_vertex):
         try:
             self.vertices_connection[vertex_id].add(connected_vertex)
         except KeyError:
@@ -51,9 +48,9 @@ class Graph:
     # finds shortest path based on chosen algorithm
     def get_shortest_path(self, start, end, algorithm="brute_force"):
         paths = dict()
-        paths[start] = 0
+        paths[tuple([start])] = 0
         terminal_paths = dict()
-        while True:
+        while paths:
             path_to_extend = self.choose_next_path(paths, algorithm)
             extended_paths = self.extend_path(path_to_extend, paths[path_to_extend])
             paths.update(extended_paths)
@@ -76,11 +73,11 @@ class Graph:
     # extends path to all not visited outgoing vertices
     def extend_path(self, path_to_extend, path_to_extend_cost):
         extended_paths = dict()
-        last_vertex = path_to_extend[-1] # todo
+        last_vertex = path_to_extend[-1]
         outgoing_vertices = self.vertices_connection[last_vertex]
         for next_vertex in outgoing_vertices:
             if next_vertex in path_to_extend:
                 continue
-            extended_paths[f"{path_to_extend}-{next_vertex}"] \
+            extended_paths[path_to_extend + tuple([next_vertex])] \
                 = path_to_extend_cost + self.get_edge_weight(last_vertex, next_vertex)
         return extended_paths

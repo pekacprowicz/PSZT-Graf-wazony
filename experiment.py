@@ -6,5 +6,5 @@ if __name__ == "__main__":
     print(graph.edges_dict)
     print(graph.vertices_connection)
     start_time = time.time()
-    print(graph.get_shortest_path("A", "G"))
+    print(graph.get_shortest_path("AA", "G"))
     print("--- %s seconds ---" % (time.time() - start_time))
