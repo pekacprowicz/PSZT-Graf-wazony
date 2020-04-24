@@ -42,7 +42,7 @@ class Graph:
             return False
 
     # finds shortest path based on chosen algorithm
-    def get_shortest_path(self, start, end, algorithm="a_star"):
+    def get_shortest_path(self, start, end, algorithm="first_best", depth=3):
         paths = dict()
         paths[tuple([start])] = 0
         shortest_terminal_path = ("", float('inf'))
@@ -50,7 +50,7 @@ class Graph:
         while paths:
             steps += 1
 
-            path_to_extend = self.choose_next_path(paths, algorithm, end)
+            path_to_extend = self.choose_next_path(paths, algorithm, end, depth)
             extended_paths = self.extend_path(path_to_extend, paths[path_to_extend])
 
             for extended_path in extended_paths:
@@ -66,16 +66,16 @@ class Graph:
             del paths[path_to_extend]
 
     # chooses path to be extended next based on chosen algorithm
-    def choose_next_path(self, paths, algorithm, end):
+    def choose_next_path(self, paths, algorithm, end, depth):
         if algorithm == "brute_force":  # returns oldest path
             return next(iter(paths))
         elif algorithm == "first_best":  # returns path with min value
             return min(paths, key=paths.get)
         elif algorithm == "a_star":     # uses heuristic function to evaluate next best path
-            return self.cheapest_n_deep(paths, end)
+            return self.cheapest_n_deep(paths, end, depth)
 
     # chooses next path based on n time extended paths' mean cost
-    def cheapest_n_deep(self, considered_paths, end, depth=3):
+    def cheapest_n_deep(self, considered_paths, end, depth):
         final_paths = dict()
         for path in considered_paths:
             extended_paths = self.extend_path_n_times(path, considered_paths[path], end, depth)
