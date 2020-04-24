@@ -46,7 +46,10 @@ class Graph:
         paths = dict()
         paths[tuple([start])] = 0
         shortest_terminal_path = ("", float('inf'))
+        steps = 0
         while paths:
+            steps += 1
+
             path_to_extend = self.choose_next_path(paths, algorithm, end)
             extended_paths = self.extend_path(path_to_extend, paths[path_to_extend])
 
@@ -58,7 +61,7 @@ class Graph:
                     paths.update(extended_paths)
 
             if shortest_terminal_path[1] <= min(paths.values()):
-                return shortest_terminal_path[0], shortest_terminal_path[1]
+                return shortest_terminal_path[0], shortest_terminal_path[1], steps
 
             del paths[path_to_extend]
 
